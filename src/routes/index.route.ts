@@ -1,10 +1,7 @@
-import { Router } from 'express';
-
+import { Router } from "express";
+import monitorRoutes from "./monitor.routes";
 const router = Router();
-
-router.get('/ping', (req, res) => {
-  res.json({ message: 'All Good 🚀' });
-});
-
+router.use("/monitor", monitorRoutes);
+//router.use('/products', productRoutes); ← example for more routes
 export default router;
-export { router as indexRouter };
+export { router as apiRouter };
