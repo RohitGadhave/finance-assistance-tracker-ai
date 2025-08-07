@@ -41,7 +41,7 @@
   },
   "lint-staged": {
     "**/*.ts": [
-      "eslint --fix",
+      "eslint --max-warnings=0",
       "git add"
     ]
   }
