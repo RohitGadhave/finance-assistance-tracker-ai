@@ -1,7 +1,7 @@
 import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
 
-export default [
+import tseslint from 'typescript-eslint';
+const rules = [
   {
     ignores: ['dist/**', 'node_modules/**']
   },
@@ -13,7 +13,12 @@ export default [
       'no-console': 'warn',
       'no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }]
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    //   'quotes': ['error', 'single', { avoidEscape: true }],
+
+        'semi': ['error', 'always'],
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
     }
   }
 ];
+export default rules;
