@@ -1,0 +1,13 @@
+@hostname = http://localhost
+@port = 3000
+@host = {{hostname}}:{{port}}
+# @host = https://sts-backend.netlify.app
+# @host = http://51.20.96.133:3000
+# @host = https://api.sainathtechnosafe.in
+@contentType = application/json
+@createdAt = {{$datetime iso8601}}
+@modifiedBy = {{$processEnv USERNAME}}
+@baseUrl = {{ $processEnv REST_BASE_URL}}
+
+###
+GET {{ host }}/monitor/ping
