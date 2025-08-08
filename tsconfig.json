@@ -10,6 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "noImplicitAny": true,
+    "resolveJsonModule": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "strictBindCallApply": true,
