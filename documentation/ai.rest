@@ -11,3 +11,5 @@
 
 ###
 GET {{ host }}/api/monitor/ping
+###
+GET {{ host }}/api/chat/init
