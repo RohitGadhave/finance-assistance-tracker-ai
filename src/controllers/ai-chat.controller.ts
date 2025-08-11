@@ -6,6 +6,7 @@ import {
 } from "../services/groq.service";
 import { ChatCompletionMessageParam } from "groq-sdk/resources/chat/completions";
 import data from "../dump/chat-backup.json";
+import { DB } from "../services/tools.service";
 const chatMessageBackupTemp: ChatCompletionMessageParam[] = [];
 export const firstChat = async (req: Request, res: Response) => {
   const body = req.body;
@@ -35,5 +36,5 @@ export const chatConversation = async (req: Request, res: Response) => {
     role: "assistant",
     content: message.content,
   }); 
-  res.json({ result, message, chatMessageBackupTemp });
+  res.json({ result, message, chatMessageBackupTemp,DB });
 };

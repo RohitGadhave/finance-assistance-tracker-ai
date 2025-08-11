@@ -6,5 +6,6 @@ export const config = {
   env: process.env.NODE_ENV || 'development',
   groqApiKey: process.env.GROQ_AI_API_KEY || '',
     isProduction: process.env.NODE_ENV === 'production',
-    aiModel: process.env.AI_MODEL || ''
+    aiModel: process.env.AI_MODEL || '',
+    MAX_TOOL_CALL_LOOPS : 10
 };
