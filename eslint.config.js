@@ -3,7 +3,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 const rules = [
   {
-    ignores: ['dist/**', 'node_modules/**']
+    ignores: ['dist/**', 'node_modules/**','src/public/**']
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

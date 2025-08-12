@@ -2,6 +2,8 @@ import express from "express";
 import { errorHandler } from "./middlewares/error.middleware";
 import { notFoundHandler } from "./middlewares/notFound.middleware";
 import { apiRouter } from "./routes/index.route";
+import "./config/init_mogodb";
+
 import path from "path";
 import { fileURLToPath } from 'url';
 
