@@ -24,6 +24,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/csurf": "^1.11.5",
+    "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.3",
     "@types/node": "^24.2.0",
     "dotenv": "^17.2.1",
@@ -35,6 +38,9 @@
     "typescript-eslint": "^8.39.0"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "csurf": "^1.11.0",
+    "ejs": "^3.1.10",
     "express": "^5.1.0",
     "groq": "^4.3.0",
     "groq-sdk": "^0.30.0",

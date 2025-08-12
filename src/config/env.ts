@@ -14,4 +14,6 @@ export const config = {
   cluster: process.env.DB_CLUSTER,
   mongoDbUrl :process.env.DB_URL || "mongodb://localhost:27017",
   isMongoDbCluster:process.env.USE_MONGODB_CLUSTER == "1",
+  cookieSecretKey:process.env.COOKIE_SECRET_KEY || "rohit",
+  cookieUserKey:'_UID',
 };

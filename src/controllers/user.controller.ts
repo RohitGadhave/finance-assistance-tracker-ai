@@ -7,9 +7,18 @@ export const createUser = async (req: Request, res: Response) => {
   try {
     const { error, value } = userSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
-
-    const user = new UserModel(value);
-    await user.save();
+    const data = {email:value.email,username:value.email.split('@')[0],uid:""};
+    console.log("Form data:", req.body,data);
+    const user = await UserModel.findOneAndUpdate({email:value.email},data,{
+      upsert:true,
+      new:true
+    });
+    // if(!user){
+    //   const user = new UserModel(data);
+    //   await user.save();
+    // }
+    data.uid = user?._id.toString(); 
+    res.cookie('_UID',JSON.stringify(data));
     res.status(201).json(user);
   } catch (err) {
     res.status(500).json({ error: "Failed to create user", details: err });
