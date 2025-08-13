@@ -6,6 +6,9 @@ import mongoose from "mongoose";
 export const createChatTopic = async (req: Request, res: Response) => {
   try {
     const { title, userId } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
     const topic = new ChatTopicModel({ title, userId });
     await topic.save();
     res.status(201).json(topic);

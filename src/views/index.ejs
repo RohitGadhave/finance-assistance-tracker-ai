@@ -19,6 +19,10 @@
                     <i class="fas fa-robot"></i>
                     <span>AI Finance BABA</span>
                 </div>
+                <button id="new-chat-prompt" class="new-chat-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>New Chat prompt</span>
+                </button>
                 <button id="new-chat" class="new-chat-btn">
                     <i class="fas fa-plus"></i>
                     <span>New Chat</span>
@@ -44,7 +48,9 @@
                         New Conversation
                     </div>
                     <div class="header-actions">
-                        <span><%= user?.username %></span>
+                        <span>
+                            <%= user?.username %>
+                        </span>
                         <button id="regenerate-response" title="Regenerate response">
                             <i class="fas fa-sync"></i>
                         </button>
@@ -95,122 +101,144 @@
     </div>
     <% if (userLoggedIn) { %>
         <script src="assets/index.js"></script>
-    <% } else { %>
+        <script type="module">
+            import { setTValue,getData, postData } from "/assets/apiClient.js";
+            setTValue("<%= csrfToken %>");
+            document.addEventListener("DOMContentLoaded", () => {
+                const newChatButton = document.getElementById("new-chat-prompt");
 
-    <div id="signup-overlay" class="modal-overlay" role="presentation">
-        <div id="signup-dialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="signup-title"
-            tabindex="-1">
-            <div class="modal-header">
-                <h2 id="signup-title">Create account — Signup</h2>
-                <button class="modal-close" id="close-signup" aria-label="Close signup dialog">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <div class="modal-body">
-                <form id="signup-form" class="signup-form" novalidate  action="/user" method="POST">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <div class="input-group">
-                        <label class="input-label" for="email">Email address</label>
-                        <input id="email" class="email-input" name="email" type="email" inputmode="email"
-                            placeholder="you@domain.com" required aria-required="true" autocomplete="email" />
-                        <div id="email-error" style="color:#d9534f; font-size:13px; display:none;">Please enter a valid
-                            email.</div>
-                    </div>
-
-                    <div class="form-actions">
-                        <!-- <button type="button" class="btn btn-ghost" id="cancel-btn">Cancel</button> -->
-                        <button type="submit" class="btn btn-primary" id="submit-btn">Continue</button>
-                    </div>
-
-                    <div id="success" class="success-msg">Thanks — check your inbox for a confirmation link (demo).
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <script>
-               document.addEventListener("DOMContentLoaded", function () {
-                const overlay = document.getElementById('signup-overlay');
-                const dialog = document.getElementById('signup-dialog');
-                // const openBtn = document.getElementById('open-signup');
-                const closeBtn = document.getElementById('close-signup');
-                const cancelBtn = document.getElementById('cancel-btn');
-                const form = document.getElementById('signup-form');
-                const emailInput = document.getElementById('email');
-                const emailError = document.getElementById('email-error');
-                const success = document.getElementById('success');
-
-                function openDialog() {
-                    overlay.classList.add('is-open');
-                    // focus the email input for accessibility
-                    setTimeout(() => emailInput.focus(), 80);
-                    // trap focus could be added later; this is a simple friendly dialog
-                }
-
-                function closeDialog() {
-                    // overlay.classList.remove('is-open');
-                    // emailError.style.display = 'none';
-                    // success.style.display = 'none';
-                    // form.reset();
-                    // openBtn.focus();
-                }
-
-                // Open handlers
-                // openBtn.addEventListener('click', openDialog);
-
-                // Close handlers
-                // closeBtn.addEventListener('click', closeDialog);
-                // cancelBtn.addEventListener('click', closeDialog);
-
-                // Close when clicking outside modal content
-                //   overlay.addEventListener('click', (e) => {
-                //     if (e.target === overlay) closeDialog();
-                //   });
-
-                // Close on Escape
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && overlay.classList.contains('is-open')) {
-                        closeDialog();
+                async function openNewChatPrompt(e) {
+                    e.stopPropagation();
+                    const title = prompt("Enter new name for this chat:", '');
+                    if (title) {
+                        const topics = await postData("/topics/", { title });
+                        // alert(title);
                     }
-                });
+                }
+                // Set up event listeners
+                newChatButton.addEventListener("click", openNewChatPrompt);
 
-                // Basic email validation and submit demo
-                form.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const val = emailInput.value.trim();
-                    // simple regex for demo
-                    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRx.test(val)) {
-                        emailError.style.display = 'block';
-                        emailInput.focus();
-                        return;
-                    }
-                    emailError.style.display = 'none';
-
-    const csrfToken = document.querySelector('input[name="_csrf"]').value;
-
-    const res = await fetch('/api/user', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'CSRF-Token': csrfToken // For csurf in "header" mode
-        },
-        body: JSON.stringify({ email: val })
-    });
-
-    if (res.ok) {
-        success.style.display = 'block';
-        window.location.reload();
-    } else {
-        alert('Error submitting form');
-    }
-                    // If you want to auto-close after success, uncomment:
-                    // setTimeout(closeDialog, 1400);
-                });
-                openDialog();
-                
             });
+        </script>
+
+        <% } else { %>
+
+            <div id="signup-overlay" class="modal-overlay" role="presentation">
+                <div id="signup-dialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="signup-title"
+                    tabindex="-1">
+                    <div class="modal-header">
+                        <h2 id="signup-title">Create account — Signup</h2>
+                        <button class="modal-close" id="close-signup" aria-label="Close signup dialog">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form id="signup-form" class="signup-form" novalidate action="/user" method="POST">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <div class="input-group">
+                                <label class="input-label" for="email">Email address</label>
+                                <input id="email" class="email-input" name="email" type="email" inputmode="email"
+                                    placeholder="you@domain.com" required aria-required="true" autocomplete="email" />
+                                <div id="email-error" style="color:#d9534f; font-size:13px; display:none;">Please enter
+                                    a valid
+                                    email.</div>
+                            </div>
+
+                            <div class="form-actions">
+                                <!-- <button type="button" class="btn btn-ghost" id="cancel-btn">Cancel</button> -->
+                                <button type="submit" class="btn btn-primary" id="submit-btn">Continue</button>
+                            </div>
+
+                            <div id="success" class="success-msg">Thanks — check your inbox for a confirmation link
+                                (demo).
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const overlay = document.getElementById('signup-overlay');
+                    const dialog = document.getElementById('signup-dialog');
+                    // const openBtn = document.getElementById('open-signup');
+                    const closeBtn = document.getElementById('close-signup');
+                    const cancelBtn = document.getElementById('cancel-btn');
+                    const form = document.getElementById('signup-form');
+                    const emailInput = document.getElementById('email');
+                    const emailError = document.getElementById('email-error');
+                    const success = document.getElementById('success');
+
+                    function openDialog() {
+                        overlay.classList.add('is-open');
+                        // focus the email input for accessibility
+                        setTimeout(() => emailInput.focus(), 80);
+                        // trap focus could be added later; this is a simple friendly dialog
+                    }
+
+                    function closeDialog() {
+                        // overlay.classList.remove('is-open');
+                        // emailError.style.display = 'none';
+                        // success.style.display = 'none';
+                        // form.reset();
+                        // openBtn.focus();
+                    }
+
+                    // Open handlers
+                    // openBtn.addEventListener('click', openDialog);
+
+                    // Close handlers
+                    // closeBtn.addEventListener('click', closeDialog);
+                    // cancelBtn.addEventListener('click', closeDialog);
+
+                    // Close when clicking outside modal content
+                    //   overlay.addEventListener('click', (e) => {
+                    //     if (e.target === overlay) closeDialog();
+                    //   });
+
+                    // Close on Escape
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && overlay.classList.contains('is-open')) {
+                            closeDialog();
+                        }
+                    });
+
+                    // Basic email validation and submit demo
+                    form.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const val = emailInput.value.trim();
+                        // simple regex for demo
+                        const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRx.test(val)) {
+                            emailError.style.display = 'block';
+                            emailInput.focus();
+                            return;
+                        }
+                        emailError.style.display = 'none';
+
+                        const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
+                        const res = await fetch('/api/user', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'CSRF-Token': csrfToken // For csurf in "header" mode
+                            },
+                            body: JSON.stringify({ email: val })
+                        });
+
+                        if (res.ok) {
+                            success.style.display = 'block';
+                            window.location.reload();
+                        } else {
+                            alert('Error submitting form');
+                        }
+                        // If you want to auto-close after success, uncomment:
+                        // setTimeout(closeDialog, 1400);
+                    });
+                    openDialog();
+
+                });
             </script>
             <% } %>
 

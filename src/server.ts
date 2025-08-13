@@ -11,6 +11,7 @@ import cookieParser from "cookie-parser";
 import { config } from "./config/env";
 import csrf from "csurf";
 import { userFromCookie } from "./middlewares/cookies.middleware";
+import { ChatTopicModel } from "./models/chat-topic.model";
 
 // ✅ Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -23,6 +24,7 @@ app.set("view engine", "ejs");
 // 2. Set the directory where your .ejs files will live
 app.set("views", path.join(__dirname, "views"));
 
+app.use(express.json());
 app.use(cookieParser(config.cookieSecretKey));
 app.use(userFromCookie(config.cookieUserKey));
 // CSRF protection
@@ -31,7 +33,6 @@ app.use(csrfProtection);
 
 app.use(express.static(path.join(__dirname, 'public/www')));
 
-app.use(express.json());
 
 app.get('/1', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/www', 'chat.html'));
@@ -47,7 +48,10 @@ app.get('/clear', (req, res) => {
   res.clearCookie(config.cookieUserKey);
   res.send('Cookie cleared!');
 });
-
+app.get('/csrf-token', csrfProtection, (req, res) => {
+    // res.json({ csrfToken: req.csrfToken() });
+    res.json({ csrfToken: '' });
+});
 app.use('/api', apiRouter);
 
 app.use(notFoundHandler);
