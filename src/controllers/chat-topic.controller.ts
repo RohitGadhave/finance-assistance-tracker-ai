@@ -20,11 +20,11 @@ export const createChatTopic = async (req: Request, res: Response) => {
 // Get all topics for a user
 export const getUserChatTopics = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.body;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: "Invalid user ID" });
+      return [];
     }
-    const topics = await ChatTopicModel.find({ userId }).sort({ updatedAt: -1 });
+    const topics = await ChatTopicModel.find({ userId },{userId:1,title:1,summary:1}).sort({ updatedAt: -1 });
     res.json(topics);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch topics", details: err });

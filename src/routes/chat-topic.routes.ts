@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 router.post("/", createChatTopic); // Create
-router.get("/user/:userId", getUserChatTopics); // Read all for user
+router.get("/user", getUserChatTopics); // Read all for user
 router.get("/:id", getChatTopicById); // Read one
 router.put("/:id", updateChatTopic); // Update
 router.delete("/:id", deleteChatTopic); // Delete

@@ -102,7 +102,8 @@
     <% if (userLoggedIn) { %>
         <script src="assets/index.js"></script>
         <script type="module">
-            import { setTValue,getData, postData } from "/assets/apiClient.js";
+            import { setTValue, getData, postData } from "/assets/apiClient.js";
+            import { getChatTopics } from "/assets/main.js";
             setTValue("<%= csrfToken %>");
             document.addEventListener("DOMContentLoaded", () => {
                 const newChatButton = document.getElementById("new-chat-prompt");
@@ -117,7 +118,7 @@
                 }
                 // Set up event listeners
                 newChatButton.addEventListener("click", openNewChatPrompt);
-
+                getChatTopics()
             });
         </script>
 
