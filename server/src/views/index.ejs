@@ -21,9 +21,9 @@
                 </div>
                 <button id="new-chat-prompt" class="new-chat-btn">
                     <i class="fas fa-plus"></i>
-                    <span>New Chat prompt</span>
+                    <span>New Chat</span>
                 </button>
-                <button id="new-chat" class="new-chat-btn">
+                <button id="new-chat" class="new-chat-btn" style="display: none;">
                     <i class="fas fa-plus"></i>
                     <span>New Chat</span>
                 </button>
@@ -32,7 +32,7 @@
                     <div id="chat-history"></div>
                 </div>
                 <div class="settings">
-                    <button id="clear-history">
+                    <button id="clear-history" style="display: none;">
                         <i class="fas fa-trash"></i>
                         <span>Clear History</span>
                     </button>
@@ -100,26 +100,12 @@
         </div>
     </div>
     <% if (userLoggedIn) { %>
-        <script src="assets/index.js"></script>
+        <!-- <script src="assets/index.js"></script> -->
         <script type="module">
             import { setTValue, getData, postData } from "/assets/apiClient.js";
-            import { getChatTopics } from "/assets/main.js";
+            import { getChatTopics,main } from "/assets/main.js";
             setTValue("<%= csrfToken %>");
-            document.addEventListener("DOMContentLoaded", () => {
-                const newChatButton = document.getElementById("new-chat-prompt");
-
-                async function openNewChatPrompt(e) {
-                    e.stopPropagation();
-                    const title = prompt("Enter new name for this chat:", '');
-                    if (title) {
-                        const topics = await postData("/topics/", { title });
-                        // alert(title);
-                    }
-                }
-                // Set up event listeners
-                newChatButton.addEventListener("click", openNewChatPrompt);
-                getChatTopics()
-            });
+            document.addEventListener("DOMContentLoaded", main);
         </script>
 
         <% } else { %>
