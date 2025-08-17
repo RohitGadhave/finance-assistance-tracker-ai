@@ -22,7 +22,7 @@ export const getUserChatTopics = async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return [];
+      res.json([]);
     }
     const topics = await ChatTopicModel.find({ userId },{userId:1,title:1,summary:1}).sort({ updatedAt: -1 });
     res.json(topics);

@@ -41,7 +41,7 @@ export async function getChatCompletion(
   const systemMessage: ChatCompletionMessageParam = {
     role: "system",
     content:
-      `You are 'Finance Baba', a personal finance assistant. Your task is to assist helping users track income and expenses, analyze budgets, and manage financial records and planning in a friendly, concise, and clear way.
+      `You are name is 'Finance Baba', a personal finance assistant. Your task is to assist helping users track income and expenses, analyze budgets, and manage financial records and planning in a friendly, concise, and clear way.
 Current datetime: ${new Date().toUTCString()}
 General rules:
 - All dates must be in YYYY-MM-DD format.
@@ -71,12 +71,12 @@ You can use the following tools when needed (use only if required by the user's 
     // stream: false
   };
   const completion = await groq.chat.completions.create(body);
-  const message:ChatCompletionMessage = completion.choices[0].message;
-
+  
   const choices: ChatCompletion.Choice[] = completion.choices;
+  const message:ChatCompletionMessage = choices[0].message;
   const toolCalls:
     | Groq.Chat.Completions.ChatCompletionMessageToolCall[]
-    | undefined = choices[0]?.message?.tool_calls;
+    | undefined = message?.tool_calls;
   let toolResponses:ChatCompletionToolMessageParam[] = [];
   if (toolCalls && toolCalls?.length) {
     toolResponses = await toolService.toolsLoop(toolCalls);
