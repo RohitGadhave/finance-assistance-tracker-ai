@@ -17,10 +17,10 @@
 <body>
     <div class="container">
         <div class="app-container">
-            <div class="sidebar">
+            <div class="sidebar" style="display: none;">
                 <div class="logo">
                     <i class="fas fa-robot"></i>
-                    <span>AI Finance BABA</span>
+                    <span><%= title %></span>
                 </div>
                 <button id="new-chat-prompt" class="new-chat-btn">
                     <i class="fas fa-plus"></i>
@@ -39,7 +39,7 @@
                         <i class="fas fa-trash"></i>
                         <span>Clear History</span>
                     </button>
-                    <button id="toggle-theme">
+                    <button id="toggle-theme1">
                         <i class="fas fa-moon"></i>
                         <span>Dark Mode</span>
                     </button>
@@ -47,8 +47,12 @@
             </div>
             <div class="chat-container">
                 <div class="chat-header">
-                    <div class="current-chat-title" id="current-chat-title">
-                        New Conversation
+                    <!-- <div class="current-chat-title" id="current-chat-title">
+                        My Conversation
+                    </div> -->
+                    <div class="logo">
+                        <i class="fas fa-robot"></i>
+                        <span><%= title %></span>
                     </div>
                     <div class="header-actions">
                         <span>
@@ -60,25 +64,32 @@
                         <button id="stop-response" title="Stop generating" style="display: none">
                             <i class="fas fa-stop"></i>
                         </button>
-                        <button id="export-chat" title="Export conversation">
-                            <i class="fas fa-download"></i>
+                        <button id="export-chat" title="Show Logs">
+                            <i class="fas fa-table"></i>
+                        </button>
+                        <button id="toggle-theme" title="Dark Mode">
+                            <i class="fas fa-moon"></i>
                         </button>
                     </div>
                 </div>
                 <div class="messages" id="messages">
-                    <div class="intro-message">
-                        <h1>Welcome to NeoChat AI</h1>
-                        <p>Ask me anything. I'm powered by deepseek-r1.</p>
-                        <div class="suggestion-chips">
-                            <button class="suggestion-chip">Tell me a story</button>
-                            <button class="suggestion-chip">
-                                Explain quantum computing
-                            </button>
-                            <button class="suggestion-chip">Write a poem</button>
-                            <button class="suggestion-chip">
-                                Help me learn JavaScript
-                            </button>
-                        </div>
+                                      <!-- Intro Section -->
+                    <div class="intro-message-section">
+                    <h1>👋 Welcome to Finance Baba</h1>
+                    <p>
+                        I’m your personal finance assistant — here to help you:
+                        <br>📈 Track your income and expenses
+                        <br>🧾 Keep your financial records organized
+                        <br>💰 Analyze budgets and spending habits
+                        <br>🗓️ Plan smarter for the future
+                    </p>
+                    <p class="tip">⚡ Tip: If you don’t mention a date, I’ll assume today.</p>
+
+                    <div class="suggestion-chips">
+                        <button class="suggestion-chip">💳 How is my balance?</button>
+                        <button class="suggestion-chip">🛒 What did I buy this month?</button>
+                        <button class="suggestion-chip">🤔 How can you help me?</button>
+                    </div>
                     </div>
                 </div>
                 <div class="input-area">

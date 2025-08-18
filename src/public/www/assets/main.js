@@ -35,7 +35,8 @@ export const main = () => {
         if (currentTheme === "dark") {
             document.body.classList.add("dark-mode");
             toggleThemeButton.innerHTML =
-                '<i class="fas fa-sun"></i><span>Light Mode</span>';
+                '<i class="fas fa-sun"></i>';
+                // '<i class="fas fa-sun"></i><span>Light Mode</span>';
         }
 
         // Set up textarea auto-resize
@@ -52,7 +53,13 @@ export const main = () => {
         // Set up event listeners
         newChatButton.addEventListener("click", openNewChatPrompt);
         toggleThemeButton.addEventListener("click", toggleTheme);
-
+        suggestionChips.forEach((chip) => {
+            chip.addEventListener("click", () => {
+            userInput.value = (chip.textContent ?? '').trim()+' ';
+            userInput.focus();
+        // handleSendMessage();
+      });
+    });
         // getChatTopics();
         getChat();
     }
@@ -329,12 +336,14 @@ export const main = () => {
       document.body.classList.add("dark-mode");
       currentTheme = "dark";
       toggleThemeButton.innerHTML =
-        '<i class="fas fa-sun"></i><span>Light Mode</span>';
+        '<i class="fas fa-sun"></i>';
+        // '<i class="fas fa-sun"></i> <span>Light Mode</span>';
     } else {
       document.body.classList.remove("dark-mode");
       currentTheme = "light";
       toggleThemeButton.innerHTML =
-        '<i class="fas fa-moon"></i><span>Dark Mode</span>';
+        '<i class="fas fa-moon"></i>';
+        // '<i class="fas fa-moon"></i> <span>Dark Mode</span>';
     }
 
     localStorage.setItem("theme", currentTheme);
@@ -358,7 +367,7 @@ function loadChatFromSidebar(id, chatHistory) {
     currentChatTitle.textContent = chat?.title;
     messagesContainer.innerHTML = `
             <div class="intro-message">
-                <h1>Welcome to NeoChat AI</h1>
+                <h1>Welcome to AI Finance BaBa</h1>
                 <p>Ask me anything. I'm powered by deepseek-r1.</p>
                 <div class="suggestion-chips">
                     <button class="suggestion-chip">Tell me a story</button>
