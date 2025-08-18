@@ -38,7 +38,7 @@ export const Chat = async (req: Request, res: Response) => {
     const result = await getChatCompletion(userId, [userMessage]);
     const resultCM = getChoiceMessage(result);
     await addChatMessages([getChatMessageFormate(resultCM, userId)]);
-    res.json({ result, data: resultCM });
+    res.json({ data: resultCM.content });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch topics", details: error });
   }
