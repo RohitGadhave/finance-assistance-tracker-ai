@@ -9,8 +9,9 @@ import {
   ChatCompletionToolChoiceOption,
   ChatCompletionToolMessageParam,
 } from "groq-sdk/resources/chat/completions";
-import { ChoiceMessage } from "../types/ai_chat.interfac";
+import { ChatMessages, ChoiceMessage } from "../types/ai_chat.interfac";
 import ToolsService from "./tools.service";
+import { addChatMessages } from "./chat-message.service";
 
 const groq = new Groq({ apiKey: config.groqApiKey });
 
@@ -31,12 +32,13 @@ const groq = new Groq({ apiKey: config.groqApiKey });
 // };
 // console.log(systemMessage);
 
-
 export async function getChatCompletion(
+  userId: string,
   messages: ChatCompletionMessageParam[] = [],
   loopCount = 0
 ): Promise<Groq.Chat.Completions.ChatCompletion> {
-    if (loopCount > config.MAX_TOOL_CALL_LOOPS) throw new Error("Max tool loops reached");
+  if (loopCount > config.MAX_TOOL_CALL_LOOPS)
+    throw new Error("Max tool loops reached");
   const toolService = new ToolsService();
   const systemMessage: ChatCompletionMessageParam = {
     role: "system",
@@ -54,7 +56,10 @@ General rules:
 You can use the following tools when needed (use only if required by the user's request):
   ${toolService.getToolConfigsContentTextForSystemRoleContent()}`.trim(),
   };
-  const chatMessage:ChatCompletionMessageParam[] = [systemMessage, ...messages];
+  const chatMessage: ChatCompletionMessageParam[] = [
+    systemMessage,
+    ...messages,
+  ];
   const body: ChatCompletionCreateParamsNonStreaming = {
     model: config.aiModel,
     messages: chatMessage,
@@ -71,26 +76,43 @@ You can use the following tools when needed (use only if required by the user's 
     // stream: false
   };
   const completion = await groq.chat.completions.create(body);
-  
+
   const choices: ChatCompletion.Choice[] = completion.choices;
-  const message:ChatCompletionMessage = choices[0].message;
+  const message: ChatCompletionMessage = choices[0].message;
   const toolCalls:
     | Groq.Chat.Completions.ChatCompletionMessageToolCall[]
     | undefined = message?.tool_calls;
-  let toolResponses:ChatCompletionToolMessageParam[] = [];
+  let toolResponses: ChatCompletionToolMessageParam[] = [];
   if (toolCalls && toolCalls?.length) {
     toolResponses = await toolService.toolsLoop(toolCalls);
-    console.log('tool res ',toolResponses);
-    return getChatCompletion([...messages, message,...toolResponses], loopCount + 1);
+    console.log("tool res ", toolResponses);
+    const result: ChatMessages = {
+      userId,
+      role: choices[0]?.finish_reason || "tool",
+      content: "",
+      metadata: completion as any,
+    };
+    await addChatMessages([result]);
+    const toolCompletionResult = await getChatCompletion(
+      userId,
+      [...messages, message, ...toolResponses],
+      loopCount + 1
+    );
+    if (loopCount > 1) {
+      await addChatMessages([
+        getChatMessageFormate(getChoiceMessage(toolCompletionResult), userId),
+      ]);
+    }
+    return toolCompletionResult;
   }
 
   return completion;
 }
 
 export async function main() {
-  const chatCompletion = await getChatCompletion();
-  console.log(chatCompletion.choices[0]?.message?.content || "");
-  return chatCompletion;
+  // const chatCompletion = await getChatCompletion();
+  // console.log(chatCompletion.choices[0]?.message?.content || "");
+  // return chatCompletion;
 }
 
 export function getUserRoleMessage(
@@ -116,6 +138,22 @@ export function getChoiceMessage(
     model: chatCompletion.model,
     object: chatCompletion.object,
     created: chatCompletion.created,
+    metadata: choice,
   };
   return message;
 }
+
+export const getChatMessageFormate = (
+  message: ChatCompletionMessageParam | ChoiceMessage,
+  userId: string
+): ChatMessages => {
+  const result: ChatMessages = {
+    userId,
+    role: message?.role || "",
+    content: Array.isArray(message?.content)
+      ? message.content.join("\n")
+      : message?.content || "",
+    metadata: "metadata" in message ? message.metadata : null,
+  };
+  return result;
+};

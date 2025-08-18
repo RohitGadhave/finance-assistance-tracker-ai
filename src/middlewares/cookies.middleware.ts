@@ -23,12 +23,12 @@ export function userFromCookie(cookieName = "user") {
         req.body.userId = userId;
         req.params.userId = userId;
       }
-      console.log("userId", {
-        cookieValue,
-        user: req.user,
-        userId,
-        body: req.body,
-      });
+      // console.log("userId", {
+      //   cookieValue,
+      //   user: req.user,
+      //   userId,
+      //   body: req.body,
+      // });
     } catch (err: any) {
       console.error("Invalid cookie value:", err.message, req.user);
       req.user = null;
