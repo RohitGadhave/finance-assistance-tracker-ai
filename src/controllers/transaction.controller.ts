@@ -27,7 +27,8 @@ export const getTransactions = async (req: Request, res: Response) => {
       if (endDate) filter.date.$lte = new Date(endDate as string);
     }
 
-    const transactions = await TransactionModel.find(filter,{ source: 1, amount: 1, date: 1, _id: 0 }).sort({ date: -1 });
+    const transactions = await TransactionModel.find(filter,{ source: 1, amount: 1, date: 1, _id: 0,
+      type: 1, }).sort({ date: -1 });
     res.json(transactions);
   } catch (err: any) {
     res.status(500).json({ error: err.message });

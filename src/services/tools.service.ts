@@ -143,7 +143,7 @@ export default class ToolsService {
       type: "function",
       function: {
         name: "getTransactions",
-        description: "Retrieve income or expenses for an optional date range.",
+        description: "Retrieve income or expenses for an optional date range. this tool also use for getting all data in details/history",
         parameters: {
           type: "object",
           properties: {
@@ -247,12 +247,12 @@ export default class ToolsService {
     if (toolFn) {
       let argsParsed: any = {};
       try {
-        argsParsed = JSON.parse(argsString);
+        argsParsed = JSON.parse(argsString) ?? {};
       } catch (err) {
         argsParsed = {};
       }
       argsParsed['content']=prompt;
-      console.log("function tool called", toolName, argsParsed);
+      // console.log("function tool called", toolName, argsParsed);
 
       try {
         toolResult = { res: await toolFn(argsParsed) };

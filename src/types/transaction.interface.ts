@@ -63,10 +63,12 @@ export interface SummaryResult {
 export interface GetTransactionsDBResult{ 
   source: string; 
   amount: number; 
-  date: string 
+  date: string;
+  type: TransactionType;
 }
 export interface GetTransactionsOutput {
   a: number;
   s: string;
   d: string;
+  t:'i'|'e'
 }

@@ -52,8 +52,11 @@ export class TransactionService {
     input: GetTransactionsInput
   ): Promise<GetTransactionsOutput[]> {
     const { type, from, to } = input;
-    const query: Record<string, any> = { userId: this.userId, type };
-
+    
+    const query: Record<string, any> = { userId: this.userId, };
+    if(["income","expense"].includes(type)){
+        query.type=type;
+    }
     if (from) {
       query.date = {};
       query.date["$gte"] = from;
@@ -69,10 +72,16 @@ export class TransactionService {
       source: 1,
       amount: 1,
       date: 1,
+      type: 1,
       _id: 0,
     }).lean<GetTransactionsDBResult[]>();
     return results.map((tran) => {
-      return { a: tran.amount, s: tran.source, d: tran.date };
+      return {
+        a: tran.amount,
+        s: tran.source,
+        d: tran.date,
+        t: tran.type == "income" ? "i" : "e",
+      };
     });
   }
 
@@ -93,7 +102,7 @@ export class TransactionService {
     let totalIncome = 0;
     let totalExpense = 0;
     transactions.forEach((transaction) => {
-        const amount = transaction.amount;
+      const amount = transaction.amount;
       if (transaction.type === "income") totalIncome += amount;
       if (transaction.type === "expense") totalExpense += amount;
     });
