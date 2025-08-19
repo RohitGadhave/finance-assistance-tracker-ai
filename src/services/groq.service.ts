@@ -39,7 +39,7 @@ export async function getChatCompletion(
 ): Promise<Groq.Chat.Completions.ChatCompletion> {
   if (loopCount > config.MAX_TOOL_CALL_LOOPS)
     throw new Error("Max tool loops reached");
-  const toolService = new ToolsService();
+  const toolService = new ToolsService(userId);
   const systemMessage: ChatCompletionMessageParam = {
     role: "system",
     content:
@@ -84,7 +84,16 @@ You can use the following tools when needed (use only if required by the user's 
     | undefined = message?.tool_calls;
   let toolResponses: ChatCompletionToolMessageParam[] = [];
   if (toolCalls && toolCalls?.length) {
-    toolResponses = await toolService.toolsLoop(toolCalls);
+    const lastMessage = chatMessage[chatMessage.length-1];
+    let prompt:string = '';
+    if(lastMessage){
+      if(lastMessage.content && typeof lastMessage.content ==='string'){
+        prompt = lastMessage?.content;
+      }else if(lastMessage.content && Array.isArray(lastMessage.content)){
+        prompt = lastMessage.content.toString();
+      }
+    }
+    toolResponses = await toolService.toolsLoop(toolCalls,prompt);
     console.log("tool res ", toolResponses);
     const result: ChatMessages = {
       userId,

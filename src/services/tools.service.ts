@@ -1,6 +1,8 @@
 import { ChatCompletionTool, ChatCompletionToolMessageParam } from "groq-sdk/resources/chat/completions";
 import { log } from "console";
 import Groq from "groq-sdk";
+import TransactionService from "./transaction.service";
+import { AddExpenditureInput, AddIncomeInput, GetSummaryInput, GetTransactionsInput, GetTransactionsOutput, SummaryResult, TransactionDocument } from "../types/transaction.interface";
 export const DB: {
   type: "income" | "expense";
   name?: string;
@@ -11,134 +13,52 @@ export const DB: {
 type AnyToolFunction = (...args: any[]) => unknown | Promise<unknown>;
 
 export default class ToolsService {
+  private userId!:string;
+  private transactionService!:TransactionService;
   private readonly toolCallFunctionsMap: Record<string, AnyToolFunction> = {
     addExpenditure: async ({
-      name,
-      amount,
-      date,
-      content,
-    }: {
-      amount: number;
-      name?: string;
-      date?: string;
-      content?: string;
-    }): Promise<void> => {
-      console.log(
-        `Adding expenditure of amount: ${amount} for ${name ?? "N/A"} on date ${
-          date ?? "N/A"
-        }`
-      );
-      DB.push({
-        type: "expense",
-        name: name ?? "unknown",
-        amount,
-        date: date ?? new Date().toISOString().slice(0, 10),
-      });
-    },
-    addIncome: async ({
-      name,
       source,
       amount,
       date,
       content,
-    }: {
-      name?: string;
-      source?: string;
-      amount: number;
-      date?: string;
-      content?: string;
-    }) => {
-      const src = name ?? source ?? "unknown";
+    }: AddExpenditureInput): Promise<AddExpenditureInput> => {
+      const src = source ?? "unknown";
+      const isoDate = date ?? new Date().toISOString();
+      const expense = { type: "expense", source: src, amount, date: isoDate };
+      await this.transactionService.addExpenditure({ source: src, amount, date: isoDate,content });
+      return expense;
+    },
+    addIncome: async ({
+      source,
+      amount,
+      date,
+      content,
+    }: AddIncomeInput):Promise<AddIncomeInput>=> {
+      const src = source ?? "unknown";
       const isoDate = date ?? new Date().toISOString();
       // persist to DB, return created record
-      const created = { type: "income", name: src, amount, date: isoDate };
-      console.log("Adding income:", created);
-      DB.push({ type: "income", name: src, amount, date: isoDate });
+      const created = { type: "income", source: src, amount, date: isoDate };
+      // console.log("Adding income:", created);
+      await this.transactionService.addIncome({ source: src, amount, date: isoDate,content });
       return created; // return object (not void) so the model sees a useful result
     },
     getTransactions: async ({
       type,
       from,
       to,
-    }: {
-      type: "income" | "expense";
-      from?: string;
-      to?: string;
-    }): Promise<{ name: string; amount: number; date: string }[]> => {
-      console.log(
-        `Fetching ${type} transactions${
-          from && to ? ` from ${from} to ${to}` : ""
-        }`
-      );
-      const res = DB.reduce((acc: any, curr: any) => {
-        if (curr.type === type) {
-          acc.push({
-            name: curr.name,
-            amount: curr.amount,
-            date: curr.date,
-          });
-        }
-        return acc;
-      }, []);
-      log("Transactions fetched:", res, DB);
-      return res;
-      if (type === "income") {
-        // Example: replace with DB call
-        return [
-          { name: "salary", amount: 2000, date: "2025-08-01" },
-          { name: "bonus", amount: 500, date: "2025-08-05" },
-        ];
-      } else if (type === "expense") {
-        // Example: replace with DB call
-        return [
-          { name: "groceries", amount: 150, date: "2025-08-02" },
-          { name: "utilities", amount: 300, date: "2025-08-06" },
-        ];
-      }
-
-      return [];
+    }: GetTransactionsInput): Promise<GetTransactionsOutput[]> => {
+      const result: GetTransactionsOutput[] = await this.transactionService.getTransactions({ type,from,to});
+      return result;
+      
     },
     getSummary: async ({
       from,
       to,
-    }: {
-      from: string;
-      to: string;
-    }): Promise<{
-      totalIncome: number;
-      totalExpense: number;
-      balance: number;
-    }> => {
-      console.log(`Fetching financial summary from ${from} to ${to}`);
-
-      // Example logic — replace with DB/real data queries
-      let totalIncome = 0; // e.g., sum of incomes in date range
-      let totalExpense = 0; // e.g., sum of expenses in date range
-      DB.forEach((transaction) => {
-        if (transaction.type === "income") {
-          totalIncome += transaction.amount;
-        } else if (transaction.type === "expense") {
-          totalExpense += transaction.amount;
-        }
-      });
-      const balance = totalIncome - totalExpense;
-
-      return {
-        totalIncome,
-        totalExpense,
-        balance,
-      };
+    }: GetSummaryInput): Promise<SummaryResult> => {
+      return await this.transactionService.getSummary({from,to});
     },
     getBalance: async (): Promise<number> => {
-      const balance = DB.reduce((acc, curr) => {
-        if (curr.type === "income") {
-          return acc + curr.amount;
-        } else if (curr.type === "expense") {
-          return acc - curr.amount;
-        }
-        return acc;
-      }, 0);
-      console.log("Fetching balance", balance, DB);
+      const balance = await this.transactionService.getBalance();
       return balance;
     },
 
@@ -160,7 +80,7 @@ export default class ToolsService {
       from: string;
       to: string;
     }): Promise<number> => {
-      console.log("Fetching Date Range balance for date range", from, to);
+      // console.log("Fetching Date Range balance for date range", from, to);
       return 1000;
     },
 
@@ -171,7 +91,7 @@ export default class ToolsService {
       from: string;
       to: string;
     }): Promise<{ name: string; amount: number; date: string }[]> => {
-      console.log(`Fetching expenditures from ${from} to ${to}`);
+      // console.log(`Fetching expenditures from ${from} to ${to}`);
       return [{ name: "groceries", amount: 100, date: "2022-10-09" }];
     },
 
@@ -182,7 +102,7 @@ export default class ToolsService {
       from: string;
       to: string;
     }): Promise<{ name: string; amount: number; date: string }[]> => {
-      console.log(`Fetching income from ${from} to ${to}`);
+      // console.log(`Fetching income from ${from} to ${to}`);
       return [{ name: "salary", amount: 1000, date: "2022-10-09" }];
     },
   };
@@ -191,15 +111,15 @@ export default class ToolsService {
       type: "function",
       function: {
         name: "addExpenditure",
-        description: "Add an expense with amount, name, and optional date.",
+        description: "Add an expense with amount, source, and optional date.",
         parameters: {
           type: "object",
           properties: {
             amount: { type: "number", description: "Amount spent." },
-            name: { type: "string", description: "Description of expense." },
+            source: { type: "string", description: "Description of expense." },
             date: { type: "string", description: "Date." },
           },
-          required: ["amount", "name"],
+          required: ["amount", "source"],
         },
       },
     },
@@ -243,7 +163,7 @@ export default class ToolsService {
       type: "function",
       function: {
         name: "getSummary",
-        description: "Get financial summary for a date range.",
+        description: "Get financial summary for a date range. date in ISO format",
         parameters: {
           type: "object",
           properties: {
@@ -294,6 +214,10 @@ export default class ToolsService {
     //     }
     //   }
   ];
+  constructor(userId:string){
+    this.userId = userId;
+    this.transactionService = new TransactionService(userId);
+  }
   get tools(): ChatCompletionTool[] {
     return this.ChatCompletionToolConfigs;
   }
@@ -315,7 +239,8 @@ export default class ToolsService {
 
   async getExecuteToolInfo(
     toolName: string,
-    argsString: string
+    argsString: string,
+    prompt:string
   ): Promise<string> {
     let toolResult: any;
     const toolFn = this.getToolCallFunction(toolName);
@@ -326,6 +251,7 @@ export default class ToolsService {
       } catch (err) {
         argsParsed = {};
       }
+      argsParsed['content']=prompt;
       console.log("function tool called", toolName, argsParsed);
 
       try {
@@ -340,14 +266,14 @@ export default class ToolsService {
     return JSON.stringify(toolResult);
   }
 
-  async toolsLoop(toolCalls: Groq.Chat.Completions.ChatCompletionMessageToolCall[]):Promise<ChatCompletionToolMessageParam[]> {
+  async toolsLoop(toolCalls: Groq.Chat.Completions.ChatCompletionMessageToolCall[],prompt:string):Promise<ChatCompletionToolMessageParam[]> {
 
     if (toolCalls?.length) {
         const promises = toolCalls.map( async (toolCall):Promise<ChatCompletionToolMessageParam> => {
           const toolName = toolCall?.function?.name;
           const argsString = toolCall?.function?.arguments ?? "{}";
           const toolCallId: string = toolCall.id;
-          const content = await this.getExecuteToolInfo(toolName, argsString);
+          const content = await this.getExecuteToolInfo(toolName, argsString,prompt);
           return {
             role: "tool",
             tool_call_id: toolCallId,
