@@ -23,7 +23,7 @@ export interface TransactionDocument extends BaseTransaction {
 
 export interface AddExpenditureInput {
   name?: string;
-  amount: number;
+  amount: number | string;
   source?: string;
   date?: string | Date;
   content?: string;
@@ -31,7 +31,7 @@ export interface AddExpenditureInput {
 
 export interface AddIncomeInput {
   source?: string;
-  amount: number;
+  amount: number | string;
   date?: string | Date;
   content?: string;
 }

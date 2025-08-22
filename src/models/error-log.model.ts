@@ -17,13 +17,14 @@ const ErrorLogSchema: Schema = new Schema({
   stack: { type: String },
   route: { type: String },
   method: { type: String },
+  prompt: { type: String },
   statusCode: { type: Number },
   timestamp: { type: Date, default: Date.now },
   metadata: { type: Schema.Types.Mixed },
   userId: { type: Schema.Types.ObjectId, ref: "User" },
 },
   {
-    timestamps: true
+    timestamps: false
   });
 
 export const ErrorLogModel = mongoose.model<IErrorLog>("ErrorLog", ErrorLogSchema);

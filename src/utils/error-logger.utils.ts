@@ -9,6 +9,7 @@ export const logErrorToDB = async (
     statusCode?: number;
     metadata?: Record<string, any>;
     userId?: mongoose.Types.ObjectId | string;
+    prompt?:string
   }
 ) => {
   try {
@@ -20,6 +21,7 @@ export const logErrorToDB = async (
       statusCode: context?.statusCode,
       metadata: context?.metadata,
       userId: context?.userId,
+      prompt:context?.prompt
     });
   } catch (logErr) {
     console.error("Failed to log error:", logErr);

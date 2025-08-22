@@ -42,7 +42,7 @@ export const Chat = async (req: Request, res: Response) => {
     res.json({ data: resultCM.content });
   } catch (error:any) {
     console.error(error);
-    await logErrorToDB(error,{route:'Chat',metadata:error,userId:userId,statusCode:500});
+    await logErrorToDB(error,{route:'Chat',metadata:error,userId:userId,statusCode:500, prompt: message});
     res.status(500).json({ error: "Failed to do conversation", details: error });
   }
 };
