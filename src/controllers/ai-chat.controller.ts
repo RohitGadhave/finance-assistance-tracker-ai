@@ -11,7 +11,7 @@ import { DB } from "../services/tools.service";
 import mongoose from "mongoose";
 import { ChatMessagesModel } from "../models/chat-message.model";
 import { ChatMessages } from "../types/ai_chat.interfac";
-import { addChatMessages } from "../services/chat-message.service";
+import { addChatMessages, getUserLastChatMessages } from "../services/chat-message.service";
 import { logErrorToDB } from "../utils/error-logger.utils";
 const chatMessageBackupTemp: ChatCompletionMessageParam[] = [];
 export const firstChat = async (req: Request, res: Response) => {
@@ -34,9 +34,11 @@ export const Chat = async (req: Request, res: Response) => {
     if (!mongoose.Types.ObjectId.isValid(userId) || !message) {
       throw Error("User id not valid");
     }
+    const lastMessages:ChatCompletionMessageParam[] = [];
+    // const a = await getUserLastChatMessages(userId);
     const userMessage = getUserRoleMessage(message);
     await addChatMessages([getChatMessageFormate(userMessage, userId)]);
-    const result = await getChatCompletion(userId, [userMessage]);
+    const result = await getChatCompletion(userId, [...lastMessages,userMessage]);
     const resultCM = getChoiceMessage(result);
     await addChatMessages([getChatMessageFormate(resultCM, userId)]);
     res.json({ data: resultCM.content });

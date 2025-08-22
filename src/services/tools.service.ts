@@ -116,7 +116,7 @@ export default class ToolsService {
         parameters: {
           type: "object",
           properties: {
-            amount: { type: "number", description: "Amount spent." },
+            amount: { type: ["number", "string"], description: "Amount spent." },
             source: { type: "string", description: "Description of expense." },
             date: { type: "string", description: "Date." },
           },
@@ -132,7 +132,7 @@ export default class ToolsService {
         parameters: {
           type: "object",
           properties: {
-            amount: { type: "number", description: "Amount earned." },
+            amount: { type: ["number", "string"], description: "Amount earned." },
             source: { type: "string", description: "Source of income." },
             date: { type: "string", description: "Date." },
           },

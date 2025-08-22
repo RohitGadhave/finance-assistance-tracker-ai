@@ -53,7 +53,7 @@ General rules:
 - Use tools only when the user's request requires them.
 - Do not fabricate values — ask for missing information.
 - Do not call a tool more than necessary.
-- Make sure "amount" is always a number, not a string if not given do not make any entry.
+- Make sure "amount" is always a number, not a string and currency ₹ INR .
 You can use the following tools when needed (use only if required by the user's request):
   ${toolService.getToolConfigsContentTextForSystemRoleContent()}`.trim(),
   };
@@ -68,7 +68,7 @@ You can use the following tools when needed (use only if required by the user's 
     temperature: 0.2,
     tool_choice: "auto",
     tools: toolService.tools,
-    max_completion_tokens:8192,
+    max_completion_tokens: 8192,
     // top_p: 1,
     // n: 1,
     // stop: null,
@@ -86,16 +86,16 @@ You can use the following tools when needed (use only if required by the user's 
     | undefined = message?.tool_calls;
   let toolResponses: ChatCompletionToolMessageParam[] = [];
   if (toolCalls && toolCalls?.length) {
-    const lastMessage = chatMessage[chatMessage.length-1];
-    let prompt:string = '';
-    if(lastMessage){
-      if(lastMessage.content && typeof lastMessage.content ==='string'){
+    const lastMessage = chatMessage[chatMessage.length - 1];
+    let prompt: string = "";
+    if (lastMessage) {
+      if (lastMessage.content && typeof lastMessage.content === "string") {
         prompt = lastMessage?.content;
-      }else if(lastMessage.content && Array.isArray(lastMessage.content)){
+      } else if (lastMessage.content && Array.isArray(lastMessage.content)) {
         prompt = lastMessage.content.toString();
       }
     }
-    toolResponses = await toolService.toolsLoop(toolCalls,prompt);
+    toolResponses = await toolService.toolsLoop(toolCalls, prompt);
     console.log("tool res ", toolResponses);
     const result: ChatMessages = {
       userId,
