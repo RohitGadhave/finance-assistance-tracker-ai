@@ -67,6 +67,7 @@ You can use the following tools when needed (use only if required by the user's 
     temperature: 0.2,
     tool_choice: "auto",
     tools: toolService.tools,
+    max_completion_tokens:8192,
     // top_p: 1,
     // n: 1,
     // stop: null,

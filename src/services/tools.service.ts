@@ -3,6 +3,7 @@ import { log } from "console";
 import Groq from "groq-sdk";
 import TransactionService from "./transaction.service";
 import { AddExpenditureInput, AddIncomeInput, GetSummaryInput, GetTransactionsInput, GetTransactionsOutput, SummaryResult, TransactionDocument } from "../types/transaction.interface";
+import { logErrorToDB } from "../utils/error-logger.utils";
 export const DB: {
   type: "income" | "expense";
   name?: string;
@@ -256,12 +257,14 @@ export default class ToolsService {
 
       try {
         toolResult = { res: await toolFn(argsParsed) };
-      } catch (err) {
+      } catch (err: any) {
         toolResult = { error: String(err) };
+        logErrorToDB(err,{route:'toolResult',metadata:err,userId:this.userId});
       }
     } else {
       console.log("no tool function available", toolName);
       toolResult = { error: `No handler for tool ${toolName}` };
+      logErrorToDB(new Error(`No handler for tool ${toolName}`),{route:'getExecuteToolInfo',userId:this.userId});
     }
     return JSON.stringify(toolResult);
   }
