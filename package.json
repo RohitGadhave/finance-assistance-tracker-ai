@@ -18,12 +18,14 @@
     "dev": "NODE_NO_WARNINGS=1 tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
+    "serve": "netlify dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@netlify/functions": "^4.2.2",
     "@types/cookie-parser": "^1.4.9",
     "@types/csurf": "^1.11.5",
     "@types/ejs": "^3.1.5",
@@ -45,7 +47,8 @@
     "groq": "^4.3.0",
     "groq-sdk": "^0.30.0",
     "joi": "^18.0.0",
-    "mongoose": "^8.17.1"
+    "mongoose": "^8.17.1",
+    "serverless-http": "^3.2.0"
   },
   "lint-staged": {
     "**/*.ts": [

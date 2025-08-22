@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = "src/public/www"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["express", "mongoose"]
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/app/:splat"
+  status = 200
