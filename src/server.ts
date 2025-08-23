@@ -19,6 +19,15 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
+  if (Buffer.isBuffer(req.body)) {
+    try {
+      req.body = JSON.parse(req.body.toString());
+    } catch {console.log('error JSON.parse body');
+    }
+  }
+  next();
+});
+app.use((req, res, next) => {
   console.log("After JSON parser:", req.body);
   next();
 });
@@ -36,7 +45,7 @@ app.set("views", getPath("src/views"));
 
 // CSRF protection
 const csrfProtection = csrf({ cookie: true });
-// app.use(csrfProtection);
+app.use(csrfProtection);
 
 app.use(express.static(getPath('src/public/www')));
 
