@@ -16,7 +16,7 @@ import { ChatTopicModel } from "./models/chat-topic.model";
 import { getPath } from "./utils/utils";
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ type: 'application/json' }));
 app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   console.log("After JSON parser:", req.body);
