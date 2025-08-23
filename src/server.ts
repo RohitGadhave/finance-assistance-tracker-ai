@@ -19,15 +19,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
-  if (Buffer.isBuffer(req.body)) {
-    try {
-      req.body = JSON.parse(req.body.toString());
-    } catch {console.log('error JSON.parse body');
-    }
-  }
-  next();
-});
-app.use((req, res, next) => {
   console.log("After JSON parser:", req.body);
   next();
 });
@@ -45,7 +36,7 @@ app.set("views", getPath("src/views"));
 
 // CSRF protection
 const csrfProtection = csrf({ cookie: true });
-app.use(csrfProtection);
+// app.use(csrfProtection);
 
 app.use(express.static(getPath('src/public/www')));
 
@@ -53,7 +44,7 @@ app.use(express.static(getPath('src/public/www')));
 app.get('/1', (req, res) => {
   res.sendFile(path.join(getPath('src/public/www'), 'chat.html'));
 });
-app.get("/", (req: Request|any, res: Response) => {
+app.get("/", csrfProtection, (req: Request|any, res: Response) => {
   const user = req?.user ?? {};
   res.render("index", { title: "AI Finance BABA", userLoggedIn: req?.user || false, csrfToken: req.csrfToken(),user });
 });
@@ -64,7 +55,7 @@ app.get('/clear', (req, res) => {
   res.clearCookie(config.cookieUserKey);
   res.send('Cookie cleared!');
 });
-app.get('/csrf-token', csrfProtection, (req, res) => {
+app.get('/csrf-token', (req, res) => {
     // res.json({ csrfToken: req.csrfToken() });
     res.json({ csrfToken: '' });
 });
