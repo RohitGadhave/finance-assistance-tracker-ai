@@ -1,4 +1,7 @@
 import express, { Request, Response } from "express";
+import csrf from "csurf";
+import cors from "cors";
+
 import { errorHandler } from "./middlewares/error.middleware";
 import { notFoundHandler } from "./middlewares/notFound.middleware";
 import { apiRouter } from "./routes/index.route";
@@ -8,19 +11,19 @@ import path from "path";
 
 import cookieParser from "cookie-parser";
 import { config } from "./config/env";
-import csrf from "csurf";
 import { userFromCookie } from "./middlewares/cookies.middleware";
 import { ChatTopicModel } from "./models/chat-topic.model";
 import { getPath } from "./utils/utils";
 
 const app = express();
-console.log('path LAMBDA_TASK_ROOT',getPath(''),process.env.LAMBDA_TASK_ROOT);
+app.use(cors());
 // 1. Set view engine to EJS
 app.set("view engine", "ejs");
 // 2. Set the directory where your .ejs files will live
 app.set("views", getPath("src/views"));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(config.cookieSecretKey));
 app.use(userFromCookie(config.cookieUserKey));
 // CSRF protection
