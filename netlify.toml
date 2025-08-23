@@ -5,8 +5,8 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  included_files = ["src/views/**"]
-  external_node_modules = ["express", "mongoose"]
+  included_files = ["src/views/**", "src/public/www/**"]
+  external_node_modules = ["express", "mongoose", "ejs"]
 
 [[redirects]]
   from = "/*"
