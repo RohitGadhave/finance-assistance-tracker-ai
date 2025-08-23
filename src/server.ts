@@ -14,7 +14,7 @@ import { ChatTopicModel } from "./models/chat-topic.model";
 import { getPath } from "./utils/utils";
 
 const app = express();
-
+console.log('path',getPath(''));
 // 1. Set view engine to EJS
 app.set("view engine", "ejs");
 // 2. Set the directory where your .ejs files will live
