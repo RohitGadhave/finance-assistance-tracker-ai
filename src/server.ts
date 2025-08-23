@@ -16,19 +16,27 @@ import { ChatTopicModel } from "./models/chat-topic.model";
 import { getPath } from "./utils/utils";
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  console.log("After JSON parser:", req.body);
+  next();
+});
+
+
+app.use(cookieParser(config.cookieSecretKey));
+app.use(userFromCookie(config.cookieUserKey));
+
 app.use(cors());
+
 // 1. Set view engine to EJS
 app.set("view engine", "ejs");
 // 2. Set the directory where your .ejs files will live
 app.set("views", getPath("src/views"));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser(config.cookieSecretKey));
-app.use(userFromCookie(config.cookieUserKey));
 // CSRF protection
 const csrfProtection = csrf({ cookie: true });
-app.use(csrfProtection);
+// app.use(csrfProtection);
 
 app.use(express.static(getPath('src/public/www')));
 
