@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = "dist/public/www"
+  publish = "src/public/www"
 
 [build.environment]
   NODE_ENV = "production"
