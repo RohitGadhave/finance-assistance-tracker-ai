@@ -5,12 +5,9 @@ import { userSchema } from "../utils/user.validator";
 // Create a new user
 export const createUser = async (req: Request, res: Response) => {
   try {
-    // console.log("Headers:", req.headers);
-    console.log("Raw body:", req.body);
     const { error, value } = userSchema.validate(req.body);
-    if (error) return res.status(400).json({ error: error.details[0].message,body:req.body });
+    if (error) return res.status(400).json({ error: error.details[0].message, });
     const data = {email:value.email,username:value.email.split('@')[0],uid:""};
-    console.log("Form data:", req.body,data);
     const user = await UserModel.findOneAndUpdate({email:value.email},data,{
       upsert:true,
       new:true

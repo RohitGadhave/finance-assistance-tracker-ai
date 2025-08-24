@@ -12,16 +12,13 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import { config } from "./config/env";
 import { userFromCookie } from "./middlewares/cookies.middleware";
-import { ChatTopicModel } from "./models/chat-topic.model";
 import { getPath } from "./utils/utils";
+import { serverlessBodyParse } from "./middlewares/request-body-parse.middleware";
 
 const app = express();
-app.use(express.json({ type: 'application/json' }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  console.log("After JSON parser:", req.body);
-  next();
-});
+app.use(serverlessBodyParse);
 
 
 app.use(cookieParser(config.cookieSecretKey));

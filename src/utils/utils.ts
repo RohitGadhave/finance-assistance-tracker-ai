@@ -8,3 +8,7 @@ export const getPath = (filePath:string) => {
   }
   return path.join(__dirname, filePath); // Inside `pkg`
 };
+
+export const isServerless = () => {
+  return process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY;
+};
