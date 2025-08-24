@@ -8,11 +8,23 @@ This project leverages AI modules to assist with finance-related tracking tasks.
 
 ### 🏠 [Homepage](https://github.com/RohitGadhave/finance-assistance-tracker-ai#readme)
 
+## 📑 Table of Contents
+- [Demo ✨](#online-demo)
+- [Features 🚀](#features-🚀)
+- [Getting Started 🛠️](#getting-started-🛠️)
+- [API Endpoints 📡](#api-endpoints-📡)
+- [Frontend 💻](#frontend-💻)
+- [Environment Variables ⚙️](#environment-variables-⚙️)
+- [Author 👤](#author-👤)
+- [Contributing 🤝](#contributing-🤝)
+- [License 📝](#license-📝)
+
+
 ## Online Demo
 
 Try the live demo: ✨ [Demo](https://finance-assistance-ai-tool-rohit.netlify.app/)
 
-## Features
+## Features 🚀
 
 - Track income and expenses
 - Analyze budgets and spending habits
@@ -22,7 +34,7 @@ Try the live demo: ✨ [Demo](https://finance-assistance-ai-tool-rohit.netlify.a
 - RESTful API for transactions, users, chat, and topics
 - Compatible with Netlify serverless deployment
 
-## Getting Started
+## Getting Started 🛠️
 
 ### Prerequisites
 
@@ -186,12 +198,12 @@ All endpoints are prefixed with `/api`.
 - `GET /api/error/:userId`  
   Get error logs for a user.
 
-## Frontend
+## Frontend 💻
 
 - EJS templates for chat UI (`src/views/index.ejs`)
 - Static assets in `src/public/www/assets/`
 
-## Environment Variables
+## Environment Variables ⚙️
 
 See `.env` for configuration.  
 Example:
@@ -206,7 +218,7 @@ DB_CLUSTER=yourcluster
 GROQ_AI_API_KEY=your_groq_api_key
 AI_MODEL=llama-3.3-70b-versatile
 ```
-## Author
+## Author 👤
 
 👤 **Rohit Gadhave**
 
@@ -214,8 +226,7 @@ AI_MODEL=llama-3.3-70b-versatile
 * Github: [@RohitGadhave](https://github.com/RohitGadhave)
 * LinkedIn: [@www.linkedin.com\/in\/rohit-gadhave-4b4424bb](https://linkedin.com/in/www.linkedin.com\/in\/rohit-gadhave-4b4424bb)
 
-## 🤝 Contributing
-
+## Contributing 🤝
 Contributions, issues and feature requests are welcome!
 
 Feel free to check [issues page](https://github.com/RohitGadhave/finance-assistance-tracker-ai/issues). You can also take a look at the [contributing guide](https://github.com/RohitGadhave/finance-assistance-tracker-ai/blob/master/CONTRIBUTING.md).
@@ -225,7 +236,7 @@ Feel free to check [issues page](https://github.com/RohitGadhave/finance-assista
 Give a ⭐️ if this project helped you!
 
 
-## 📝 License
+## License 📝
 
 Copyright © 2025 [Rohit Gadhave](https://github.com/RohitGadhave).
 
