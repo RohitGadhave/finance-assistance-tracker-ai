@@ -1,6 +1,9 @@
 [build]
   command = "npm run build"
-  publish = "src/public/www"
+  publish = "dist/public/www"
+
+[build.environment]
+  NODE_ENV = "production"
 
 [functions]
   directory = "netlify/functions"
