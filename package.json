@@ -16,8 +16,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "NODE_NO_WARNINGS=1 tsx watch src/index.ts",
-    "build": "tsc && npm run copy:public",
-    "copy:public": "cp -r src/public/www dist/public/www",
+    "build": "tsc",
     "start": "node dist/index.js",
     "serve": "netlify dev",
     "test": "echo \"Error: no test specified\" && exit 1",
