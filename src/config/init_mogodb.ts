@@ -5,7 +5,7 @@ if (config.isMongoDbCluster) {
   config.mongoDbUrl = `mongodb+srv://${config.username}:${config.password}@${config.cluster}.mongodb.net/${config.dbName}?retryWrites=true&w=majority`;
 }
 
-console.log("mongoose db url", config.mongoDbUrl, config.dbName);
+console.log("mongoose db config", config.isMongoDbCluster?'mongodb+srv':config.mongoDbUrl, {cluster:config.cluster,dbName:config.dbName});
 mongoose
   .connect(config.mongoDbUrl, {
     dbName: config.dbName,
