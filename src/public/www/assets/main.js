@@ -1,5 +1,27 @@
 'use strict';
 import { getData, postData } from "/assets/apiClient.js";
+export const header = (pagename)=>{
+    // DOM Elements
+    const toggleThemeButton = document.getElementById("toggle-theme");
+    const transactionLogButton = document.getElementById("transaction-log");
+    let currentTheme = localStorage.getItem("theme") || "light";
+
+        transactionLogButton.addEventListener("click", () => {
+                window.location.href = pagename=='transactions'?'/':'/transactions'; 
+        });
+               // Apply theme
+        if (currentTheme === "dark") {
+            document.body.classList.add("dark-mode");
+            toggleThemeButton.innerHTML =
+                '<i class="fas fa-sun"></i>';
+                // '<i class="fas fa-sun"></i><span>Light Mode</span>';
+        }
+        toggleThemeButton.addEventListener("click", toggleTheme);
+        if(pagename=='index'){
+            main()
+        }
+
+}
 export const main = () => {
     // DOM Elements
     const messagesContainer = document.getElementById("messages");
@@ -7,7 +29,6 @@ export const main = () => {
     const sendButton = document.getElementById("send-button");
     const newChatButton = document.getElementById("new-chat-prompt");
     const clearHistoryButton = document.getElementById("clear-history");
-    const toggleThemeButton = document.getElementById("toggle-theme");
     const chatHistoryContainer = document.getElementById("chat-history");
     const currentChatTitle = document.getElementById("current-chat-title");
     const exportChatButton = document.getElementById("export-chat");
@@ -21,7 +42,6 @@ export const main = () => {
 
     // State variables
     let isTyping = false;
-    let currentTheme = localStorage.getItem("theme") || "light";
     let typingSpeed = 2; // reduced for faster letter-by-letter output
     let pendingFile = null; // Store selected file until send
     let stopGeneration = false; // Flag to stop the typing effect
@@ -31,14 +51,6 @@ export const main = () => {
     init();
     // Function to initialize the application
     function init() {
-        // Apply theme
-        if (currentTheme === "dark") {
-            document.body.classList.add("dark-mode");
-            toggleThemeButton.innerHTML =
-                '<i class="fas fa-sun"></i>';
-                // '<i class="fas fa-sun"></i><span>Light Mode</span>';
-        }
-
         // Set up textarea auto-resize
         userInput.addEventListener("input", autoResizeTextarea);
 
@@ -52,13 +64,12 @@ export const main = () => {
         });
         // Set up event listeners
         newChatButton.addEventListener("click", openNewChatPrompt);
-        toggleThemeButton.addEventListener("click", toggleTheme);
         suggestionChips.forEach((chip) => {
             chip.addEventListener("click", () => {
             userInput.value = (chip.textContent ?? '').trim()+' ';
             userInput.focus();
-        // handleSendMessage();
-      });
+            // handleSendMessage();
+        });
     });
         // getChatTopics();
         getChat();
@@ -331,23 +342,7 @@ export const main = () => {
     }
 
       // Function to toggle theme
-  function toggleTheme() {
-    if (currentTheme === "light") {
-      document.body.classList.add("dark-mode");
-      currentTheme = "dark";
-      toggleThemeButton.innerHTML =
-        '<i class="fas fa-sun"></i>';
-        // '<i class="fas fa-sun"></i> <span>Light Mode</span>';
-    } else {
-      document.body.classList.remove("dark-mode");
-      currentTheme = "light";
-      toggleThemeButton.innerHTML =
-        '<i class="fas fa-moon"></i>';
-        // '<i class="fas fa-moon"></i> <span>Dark Mode</span>';
-    }
 
-    localStorage.setItem("theme", currentTheme);
-  }
 }
 // Function to update active chat in sidebar
 function updateActiveChatInSidebar(currentChatId) {
@@ -415,3 +410,29 @@ export async function getChatTopics() {
 
 
 }
+
+export async function logout(){
+    if (confirm("Are you sure you want to logout?")) {
+    const res = await getData('/user/logout');
+    console.log(res);
+    alert('Logout');
+    location.reload();
+    }
+}
+  function toggleTheme() {
+    if (currentTheme === "light") {
+      document.body.classList.add("dark-mode");
+      currentTheme = "dark";
+      toggleThemeButton.innerHTML =
+        '<i class="fas fa-sun"></i>';
+        // '<i class="fas fa-sun"></i> <span>Light Mode</span>';
+    } else {
+      document.body.classList.remove("dark-mode");
+      currentTheme = "light";
+      toggleThemeButton.innerHTML =
+        '<i class="fas fa-moon"></i>';
+        // '<i class="fas fa-moon"></i> <span>Dark Mode</span>';
+    }
+
+    localStorage.setItem("theme", currentTheme);
+  }

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserModel } from "../models/user.model";
 import { userSchema } from "../utils/user.validator";
+import { config } from "../config/env";
 
 // Create a new user
 export const createUser = async (req: Request, res: Response) => {
@@ -72,4 +73,9 @@ export const deleteUser = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to delete user", details: error });
   }
+};
+
+export const logout = (req: Request, res: Response) => {
+  res.clearCookie(config.cookieUserKey); // name of your cookie
+  res.send("Cookie cleared!");
 };

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.2.12/marked.min.js"></script>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="app-container">
+            <div class="sidebar" style="display: none;">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span><%= title %></span>
+                </div>
+                <button id="new-chat-prompt" class="new-chat-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>New Chat</span>
+                </button>
+                <button id="new-chat" class="new-chat-btn" style="display: none;">
+                    <i class="fas fa-plus"></i>
+                    <span>New Chat</span>
+                </button>
+                <div class="history-container">
+                    <h3>Chat History</h3>
+                    <div id="chat-history"></div>
+                </div>
+                <div class="settings">
+                    <button id="clear-history" style="display: none;">
+                        <i class="fas fa-trash"></i>
+                        <span>Clear History</span>
+                    </button>
+                    <button id="toggle-theme1">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark Mode</span>
+                    </button>
+                </div>
+            </div>
+            <div class="chat-container">
+                <div class="chat-header">
+                    <!-- <div class="current-chat-title" id="current-chat-title">
+                        My Conversation
+                    </div> -->
+                    <div class="logo">
+                        <i class="fas fa-robot"></i>
+                        <span><%= title %></span>
+                    </div>
+                    <div class="header-actions">
+                        <span>
+                            <%= user?.username %>
+                        </span>
+                        <button id="regenerate-response" title="Regenerate response">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                        <button id="stop-response" title="Stop generating" style="display: none">
+                            <i class="fas fa-stop"></i>
+                        </button>
+    <% if (pageName == 'index') { %>
+
+                        <button id="transaction-log" title="Show Logs" >
+                            <i class="fas fa-table"></i>
+                        </button>
+        <% } else { %>
+
+                        <button id="transaction-log" title="chat" >
+                            <i class="fas fa-comments"></i>
+                        </button>
+            <% } %>
+
+                        <button id="toggle-theme" title="Dark Mode">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <button id="logout" title="logout" onclick="logout()">
+                            <i class="fas fa-arrow-right-from-bracket"></i>
+                        </button>
+                    </div>
+                </div>

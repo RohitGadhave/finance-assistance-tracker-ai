@@ -17,7 +17,7 @@ export const createTransaction = async (req: Request, res: Response) => {
 export const getTransactions = async (req: Request, res: Response) => {
   try {
     const { userId, type, startDate, endDate } = req.query;
-
+    if (!userId) return res.status(404).json({ error: "User not found" });
     const filter: any = {};
     if (userId) filter.userId = userId;
     if (type) filter.type = type;

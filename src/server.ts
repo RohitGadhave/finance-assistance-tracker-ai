@@ -41,9 +41,13 @@ app.use(express.static(getPath('src/public/www')));
 app.get('/1', (req, res) => {
   res.sendFile(path.join(getPath('src/public/www'), 'chat.html'));
 });
-app.get("/", csrfProtection, (req: Request|any, res: Response) => {
+app.get(["/","index"], csrfProtection, (req: Request|any, res: Response) => {
   const user = req?.user ?? {};
   res.render("index", { title: "AI Finance BABA", userLoggedIn: req?.user || false, csrfToken: req.csrfToken(),user });
+});
+app.get("/transactions", csrfProtection, (req: Request|any, res: Response) => {
+  const user = req?.user ?? {};
+  res.render("transaction", { title: "AI Finance BABA", userLoggedIn: req?.user || false, csrfToken: req.csrfToken(),user });
 });
 app.get('/check', (req:any, res) => {
   res.send(`Signed Session ID: ${req?.user}`);
