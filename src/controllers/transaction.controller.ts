@@ -16,7 +16,8 @@ export const createTransaction = async (req: Request, res: Response) => {
 // Get all transactions (with optional filters)
 export const getTransactions = async (req: Request, res: Response) => {
   try {
-    const { userId, type, startDate, endDate } = req.query;
+    const { type, startDate, endDate } = req.query;
+    const { userId } = req.body;
     if (!userId) return res.status(404).json({ error: "User not found" });
     const filter: any = {};
     if (userId) filter.userId = userId;

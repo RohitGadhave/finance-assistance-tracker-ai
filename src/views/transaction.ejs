@@ -1,6 +1,98 @@
 <%- include("header",{pageName:'transactions'}) %>
+<style>
+    .table-container {
+  background: var(--background-primary);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 14px var(--shadow-color);
+  max-width: 100%;
+  overflow-x: auto;
+  transition: background-color var(--animation-speed),
+              color var(--animation-speed);
+}
+
+.table-title {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.transaction-table th {
+  background: var(--background-tertiary);
+  padding: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.transaction-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.transaction-table tr:hover {
+  background: var(--background-secondary);
+  transition: background-color var(--animation-speed);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.page-btn {
+  background: var(--primary-color);
+  color: var(--user-message-text);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color var(--animation-speed);
+}
+
+.page-btn:hover {
+  background: var(--secondary-color);
+}
+
+#page-info {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+</style>
 <div class="table-container">
-  <!-- your table here -->
+<table class="transaction-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Income/Expense</th>
+        <th>Description</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+      <!-- rows will be dynamically inserted -->
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button id="prev-page" class="page-btn">⬅ Prev</button>
+    <span id="page-info">Page 1 of 3</span>
+    <button id="next-page" class="page-btn">Next ➡</button>
+  </div>
 </div>
 
 <%- include("footer",{pageName:'transactions'}) %>

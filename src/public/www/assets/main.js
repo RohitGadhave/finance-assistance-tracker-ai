@@ -1,26 +1,45 @@
 'use strict';
 import { getData, postData } from "/assets/apiClient.js";
-export const header = (pagename)=>{
+export const header = (pagename) => {
     // DOM Elements
     const toggleThemeButton = document.getElementById("toggle-theme");
     const transactionLogButton = document.getElementById("transaction-log");
     let currentTheme = localStorage.getItem("theme") || "light";
 
-        transactionLogButton.addEventListener("click", () => {
-                window.location.href = pagename=='transactions'?'/':'/transactions'; 
-        });
-               // Apply theme
-        if (currentTheme === "dark") {
-            document.body.classList.add("dark-mode");
-            toggleThemeButton.innerHTML =
-                '<i class="fas fa-sun"></i>';
-                // '<i class="fas fa-sun"></i><span>Light Mode</span>';
-        }
-        toggleThemeButton.addEventListener("click", toggleTheme);
-        if(pagename=='index'){
-            main()
-        }
+    transactionLogButton.addEventListener("click", () => {
+        window.location.href = pagename == 'transactions' ? '/' : '/transactions';
+    });
+    // Apply theme
+    if (currentTheme === "dark") {
+        document.body.classList.add("dark-mode");
+        toggleThemeButton.innerHTML =
+            '<i class="fas fa-sun"></i>';
+        // '<i class="fas fa-sun"></i><span>Light Mode</span>';
+    }
+    toggleThemeButton.addEventListener("click", toggleTheme);
+    if (pagename == 'index') {
+        main()
+    } else if (pagename == 'transactions') {
+        transactions()
+    }
 
+function toggleTheme() {
+    if (currentTheme === "light") {
+        document.body.classList.add("dark-mode");
+        currentTheme = "dark";
+        toggleThemeButton.innerHTML =
+            '<i class="fas fa-sun"></i>';
+        // '<i class="fas fa-sun"></i> <span>Light Mode</span>';
+    } else {
+        document.body.classList.remove("dark-mode");
+        currentTheme = "light";
+        toggleThemeButton.innerHTML =
+            '<i class="fas fa-moon"></i>';
+        // '<i class="fas fa-moon"></i> <span>Dark Mode</span>';
+    }
+
+    localStorage.setItem("theme", currentTheme);
+}
 }
 export const main = () => {
     // DOM Elements
@@ -32,9 +51,9 @@ export const main = () => {
     const chatHistoryContainer = document.getElementById("chat-history");
     const currentChatTitle = document.getElementById("current-chat-title");
     const exportChatButton = document.getElementById("export-chat");
-    const regenerateResponseButton = document.getElementById(
-        "regenerate-response"
-    );
+    // const regenerateResponseButton = document.getElementById(
+    //     "regenerate-response"
+    // );
     const stopResponseButton = document.getElementById("stop-response");
     const suggestionChips = document.querySelectorAll(".suggestion-chip");
     const fileUploadButton = document.getElementById("file-upload-button");
@@ -66,11 +85,11 @@ export const main = () => {
         newChatButton.addEventListener("click", openNewChatPrompt);
         suggestionChips.forEach((chip) => {
             chip.addEventListener("click", () => {
-            userInput.value = (chip.textContent ?? '').trim()+' ';
-            userInput.focus();
-            // handleSendMessage();
+                userInput.value = (chip.textContent ?? '').trim() + ' ';
+                userInput.focus();
+                // handleSendMessage();
+            });
         });
-    });
         // getChatTopics();
         getChat();
     }
@@ -99,9 +118,9 @@ export const main = () => {
         // Only proceed if there is text or a pending file
         if (!message && !pendingFile) return;
         addMessageToUI("user", message);
-            // Clear input and reset height
-            userInput.value = "";
-            userInput.style.height = "auto";
+        // Clear input and reset height
+        userInput.value = "";
+        userInput.style.height = "auto";
 
         console.log('handleSendMessage', message);
         try {
@@ -341,7 +360,7 @@ export const main = () => {
         }
     }
 
-      // Function to toggle theme
+    // Function to toggle theme
 
 }
 // Function to update active chat in sidebar
@@ -411,28 +430,59 @@ export async function getChatTopics() {
 
 }
 
-export async function logout(){
+export async function logout() {
     if (confirm("Are you sure you want to logout?")) {
-    const res = await getData('/user/logout');
-    console.log(res);
-    alert('Logout');
-    location.reload();
+        const res = await getData('/user/logout');
+        console.log(res);
+        alert('Logout');
+        location.reload();
     }
 }
-  function toggleTheme() {
-    if (currentTheme === "light") {
-      document.body.classList.add("dark-mode");
-      currentTheme = "dark";
-      toggleThemeButton.innerHTML =
-        '<i class="fas fa-sun"></i>';
-        // '<i class="fas fa-sun"></i> <span>Light Mode</span>';
-    } else {
-      document.body.classList.remove("dark-mode");
-      currentTheme = "light";
-      toggleThemeButton.innerHTML =
-        '<i class="fas fa-moon"></i>';
-        // '<i class="fas fa-moon"></i> <span>Dark Mode</span>';
+
+async function transactions() {
+    let currentPage = 1;
+    const rowsPerPage = 20;
+    const transactionHistory = await getData('/transactions');
+    renderTable()
+    function renderTable() {
+        const tableBody = document.getElementById("table-body");
+        tableBody.innerHTML = "";
+
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const pageData = transactionHistory.slice(start, end);
+
+        pageData.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+      <td>${row.date}</td>
+      <td>${row.type}</td>
+      <td>${row.source}</td>
+      <td>${row.amount}</td>
+    `;
+            tableBody.appendChild(tr);
+        });
+
+        document.getElementById("page-info").innerText =
+            `Page ${currentPage} of ${Math.ceil(transactionHistory.length / rowsPerPage)}`;
     }
 
-    localStorage.setItem("theme", currentTheme);
-  }
+    // DOM Elements
+    const nextPageButton = document.getElementById("next-page");
+    const prevPageButton = document.getElementById("prev-page");
+    nextPageButton.addEventListener("click",nextPage);
+    prevPageButton.addEventListener("click",prevPage);
+    function nextPage() {
+        if (currentPage < Math.ceil(transactionHistory.length / rowsPerPage)) {
+            currentPage++;
+            renderTable();
+        }
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    }
+}
