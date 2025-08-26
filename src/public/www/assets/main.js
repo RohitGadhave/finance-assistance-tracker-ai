@@ -452,19 +452,20 @@ async function transactions() {
         const end = start + rowsPerPage;
         const pageData = transactionHistory.slice(start, end);
 
-        pageData.forEach(row => {
+        pageData.forEach((row,i) => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
-      <td>${row.date}</td>
+      <td>${getIndex(i)}</td>
+      <td>${row.amount}</td>
       <td>${row.type}</td>
       <td>${row.source}</td>
-      <td>${row.amount}</td>
+      <td>${formatDateTimeWithAMPM(row.date)}</td>
     `;
             tableBody.appendChild(tr);
         });
 
         document.getElementById("page-info").innerText =
-            `Page ${currentPage} of ${Math.ceil(transactionHistory.length / rowsPerPage)}`;
+            `Page ${currentPage} of ${Math.ceil(transactionHistory.length / rowsPerPage)} / ${transactionHistory.length}`;
     }
 
     // DOM Elements
@@ -485,4 +486,45 @@ async function transactions() {
             renderTable();
         }
     }
+
+
+    function getIndex(ind){
+        let i = ind+1;
+        return i+rowsPerPage*(currentPage -1);
+    }
+
+    function formatDateTime(date) {
+        date = new Date(date);
+        const pad = (num) => String(num).padStart(2, '0');
+
+        const day = pad(date.getDate());
+        const month = pad(date.getMonth() + 1); // Months are 0-indexed
+        const year = date.getFullYear();
+
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+        const seconds = pad(date.getSeconds());
+
+        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    }
+    function formatDateTimeWithAMPM(date) {
+        date = new Date(date);
+  const pad = (num) => String(num).padStart(2, '0');
+
+  const day = pad(date.getDate());
+  const month = pad(date.getMonth() + 1);
+  const year = date.getFullYear();
+
+  let hours = date.getHours();
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12; // Convert to 12-hour format
+  const formattedHours = pad(hours);
+
+  return `${day}/${month}/${year} ${formattedHours}:${minutes}:${seconds} ${ampm}`;
+}
+
+
 }
