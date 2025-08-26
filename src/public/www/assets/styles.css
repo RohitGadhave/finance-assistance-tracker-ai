@@ -814,3 +814,85 @@ pre code {
 
     /* show/hide helpers */
     .is-open { display:flex; }
+
+
+           .table-container {
+  /* background: var(--background-primary); */
+  /* border-radius: var(--border-radius); */
+  /* box-shadow: 0 4px 14px var(--shadow-color); */
+  padding: 0rem 1.5rem;
+  max-width: 100%;
+  max-height: 100%;
+  overflow-x: auto;
+  transition: background-color var(--animation-speed),
+              color var(--animation-speed);
+}
+.table-title {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .transaction-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    .transaction-table th {
+      background: var(--background-tertiary);
+      padding: 0.75rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .transaction-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .transaction-table tr:hover {
+      background: var(--background-secondary);
+      transition: background-color var(--animation-speed);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .page-btn {
+      background: var(--primary-color);
+      color: var(--user-message-text);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color var(--animation-speed);
+    }
+
+    .page-btn:hover {
+      background: var(--secondary-color);
+    }
+
+    #page-info {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+    @media (max-width: 768px) { /* Adjust max-width as needed for your small screen breakpoint */
+  .table-container {
+    overflow-x: auto;
+  }
+  .transaction-table {
+    min-width: 600px; /* Set a minimum width larger than the container on small screens */
+  }
+}
+.title{
+  padding: 0.5rem 1.5rem 0rem 1.5rem;
+}

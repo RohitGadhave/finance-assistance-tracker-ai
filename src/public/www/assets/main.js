@@ -17,29 +17,33 @@ export const header = (pagename) => {
         // '<i class="fas fa-sun"></i><span>Light Mode</span>';
     }
     toggleThemeButton.addEventListener("click", toggleTheme);
+    console.log('pagename', pagename);
+
     if (pagename == 'index') {
         main()
     } else if (pagename == 'transactions') {
         transactions()
+    } else if (pagename == 'row-chat') {
+        chatRow()
     }
 
-function toggleTheme() {
-    if (currentTheme === "light") {
-        document.body.classList.add("dark-mode");
-        currentTheme = "dark";
-        toggleThemeButton.innerHTML =
-            '<i class="fas fa-sun"></i>';
-        // '<i class="fas fa-sun"></i> <span>Light Mode</span>';
-    } else {
-        document.body.classList.remove("dark-mode");
-        currentTheme = "light";
-        toggleThemeButton.innerHTML =
-            '<i class="fas fa-moon"></i>';
-        // '<i class="fas fa-moon"></i> <span>Dark Mode</span>';
-    }
+    function toggleTheme() {
+        if (currentTheme === "light") {
+            document.body.classList.add("dark-mode");
+            currentTheme = "dark";
+            toggleThemeButton.innerHTML =
+                '<i class="fas fa-sun"></i>';
+            // '<i class="fas fa-sun"></i> <span>Light Mode</span>';
+        } else {
+            document.body.classList.remove("dark-mode");
+            currentTheme = "light";
+            toggleThemeButton.innerHTML =
+                '<i class="fas fa-moon"></i>';
+            // '<i class="fas fa-moon"></i> <span>Dark Mode</span>';
+        }
 
-    localStorage.setItem("theme", currentTheme);
-}
+        localStorage.setItem("theme", currentTheme);
+    }
 }
 export const main = () => {
     // DOM Elements
@@ -452,7 +456,7 @@ async function transactions() {
         const end = start + rowsPerPage;
         const pageData = transactionHistory.slice(start, end);
 
-        pageData.forEach((row,i) => {
+        pageData.forEach((row, i) => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
       <td>${getIndex(i)}</td>
@@ -465,14 +469,14 @@ async function transactions() {
         });
 
         document.getElementById("page-info").innerText =
-            `Page ${currentPage} of ${Math.ceil(transactionHistory.length / rowsPerPage)} / ${transactionHistory.length}`;
+            `Page ${currentPage} of ${Math.ceil(transactionHistory.length / rowsPerPage)} / Total: ${transactionHistory.length}`;
     }
 
     // DOM Elements
     const nextPageButton = document.getElementById("next-page");
     const prevPageButton = document.getElementById("prev-page");
-    nextPageButton.addEventListener("click",nextPage);
-    prevPageButton.addEventListener("click",prevPage);
+    nextPageButton.addEventListener("click", nextPage);
+    prevPageButton.addEventListener("click", prevPage);
     function nextPage() {
         if (currentPage < Math.ceil(transactionHistory.length / rowsPerPage)) {
             currentPage++;
@@ -486,45 +490,107 @@ async function transactions() {
             renderTable();
         }
     }
-
-
-    function getIndex(ind){
-        let i = ind+1;
-        return i+rowsPerPage*(currentPage -1);
+    function getIndex(ind) {
+        let i = ind + 1;
+        return i + rowsPerPage * (currentPage - 1);
     }
-
-    function formatDateTime(date) {
-        date = new Date(date);
-        const pad = (num) => String(num).padStart(2, '0');
-
-        const day = pad(date.getDate());
-        const month = pad(date.getMonth() + 1); // Months are 0-indexed
-        const year = date.getFullYear();
-
-        const hours = pad(date.getHours());
-        const minutes = pad(date.getMinutes());
-        const seconds = pad(date.getSeconds());
-
-        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-    }
-    function formatDateTimeWithAMPM(date) {
-        date = new Date(date);
-  const pad = (num) => String(num).padStart(2, '0');
-
-  const day = pad(date.getDate());
-  const month = pad(date.getMonth() + 1);
-  const year = date.getFullYear();
-
-  let hours = date.getHours();
-  const minutes = pad(date.getMinutes());
-  const seconds = pad(date.getSeconds());
-
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12 || 12; // Convert to 12-hour format
-  const formattedHours = pad(hours);
-
-  return `${day}/${month}/${year} ${formattedHours}:${minutes}:${seconds} ${ampm}`;
 }
 
 
+
+function formatDateTime(date) {
+    date = new Date(date);
+    const pad = (num) => String(num).padStart(2, '0');
+
+    const day = pad(date.getDate());
+    const month = pad(date.getMonth() + 1); // Months are 0-indexed
+    const year = date.getFullYear();
+
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+}
+function formatDateTimeWithAMPM(date) {
+    date = new Date(date);
+    const pad = (num) => String(num).padStart(2, '0');
+
+    const day = pad(date.getDate());
+    const month = pad(date.getMonth() + 1);
+    const year = date.getFullYear();
+
+    let hours = date.getHours();
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12; // Convert to 12-hour format
+    const formattedHours = pad(hours);
+
+    return `${day}/${month}/${year} ${formattedHours}:${minutes}:${seconds} ${ampm}`;
+}
+async function chatRow() {
+    let currentPage = 1;
+    const rowsPerPage = 20;
+    let chatHistory = await getData('/chat', { raw: true });
+    chatHistory = chatHistory['data']
+    console.log('chat history', chatHistory);
+    renderTable()
+    function renderTable() {
+        const tableBody = document.getElementById("table-body");
+        tableBody.innerHTML = "";
+
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const pageData = chatHistory.slice(start, end);
+
+        pageData.forEach((row, i) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+      <td>${getIndex(i)}</td>
+      <td>${row?.role=='assistant'?'AI Call-'+row?.role:row?.role}</td>
+      <td>${row?.content}</td>
+      <td>${formatDateTimeWithAMPM(row?.createdAt)}</td>
+      <td>${getMetadata(row?.metadata)}</td>
+    `;
+            tableBody.appendChild(tr);
+        });
+
+        document.getElementById("page-info").innerText =
+            `Page ${currentPage} of ${Math.ceil(chatHistory.length / rowsPerPage)} / Total: ${chatHistory.length}`;
+    }
+
+    // DOM Elements
+    const nextPageButton = document.getElementById("next-page");
+    const prevPageButton = document.getElementById("prev-page");
+    nextPageButton.addEventListener("click", nextPage);
+    prevPageButton.addEventListener("click", prevPage);
+    function nextPage() {
+        if (currentPage < Math.ceil(chatHistory.length / rowsPerPage)) {
+            currentPage++;
+            renderTable();
+        }
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    }
+    function getIndex(ind) {
+        let i = ind + 1;
+        return i + rowsPerPage * (currentPage - 1);
+    }
+
+    function getMetadata(metadata){
+        let mesg = metadata;
+        try {
+        mesg = metadata ? JSON.stringify(metadata, null, 2) : null
+    } catch (error) {
+      mesg = String(metadata)
+    }
+        return mesg
+    }
 }

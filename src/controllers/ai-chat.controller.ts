@@ -69,12 +69,25 @@ export const chatConversation = async (req: Request, res: Response) => {
 export const getChatMessages = async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
+    const { raw } = req.query;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ error: "Invalid user ID format" });
     }
+    const filter: {
+    userId: any;
+    role?: {
+        $in: string[];
+    };
+} = {
+      userId,
+      role:{$in:['user','assistant']}
+    };
+    if(raw){
+      delete filter['role'];
+    }
 
-    const result = await ChatMessagesModel.find({ userId }).sort({
+    const result = await ChatMessagesModel.find(filter).sort({
       timestamp: 1,
     });
 

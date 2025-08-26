@@ -39,7 +39,7 @@ app.use(express.static(getPath('src/public/www')));
 
 
 app.get('/1', (req, res) => {
-  res.sendFile(path.join(getPath('src/public/www'), 'chat.html'));
+  res.sendFile(path.join(getPath('src/public/vendor'), 'chat.html'));
 });
 app.get(["/","index"], csrfProtection, (req: Request|any, res: Response) => {
   const user = req?.user ?? {};
@@ -47,7 +47,11 @@ app.get(["/","index"], csrfProtection, (req: Request|any, res: Response) => {
 });
 app.get("/transactions", csrfProtection, (req: Request|any, res: Response) => {
   const user = req?.user ?? {};
-  res.render("transaction", { title: "AI Finance BABA", userLoggedIn: req?.user || false, csrfToken: req.csrfToken(),user });
+  res.render("transaction", { title: "AI Finance BABA (Transaction)", userLoggedIn: req?.user || false, csrfToken: req.csrfToken(),user });
+});
+app.get("/row-chat", csrfProtection, (req: Request|any, res: Response) => {
+  const user = req?.user ?? {};
+  res.render("row-chat", { title: "AI Finance BABA (Row Chat)", userLoggedIn: req?.user || false, csrfToken: req.csrfToken(),user });
 });
 app.get('/check', (req:any, res) => {
   res.send(`Signed Session ID: ${req?.user}`);

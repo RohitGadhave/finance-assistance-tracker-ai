@@ -1,16 +1,16 @@
-<%- include("header",{pageName:'transactions'}) %>
-<h3 class="title">Transactions</h3>
-
+<%- include("header",{pageName:'row-chat'}) %>
+<h3 class="title">Raw Chat</h3>
+  
   <div class="messages">
     <div class="table-container">
       <table class="transaction-table">
         <thead>
           <tr>
             <th>Sr.No</th>
-            <th>Amount</th>
-            <th>Income/Expense</th>
-            <th>Description</th>
+            <th>Role</th>
+            <th>Prompt</th>
             <th>Date</th>
+            <th>Metadata</th>
           </tr>
         </thead>
         <tbody id="table-body">
@@ -27,7 +27,7 @@
     </div>
     <div class="disclaimer">
         Chat may produce inaccurate information. Messages are stored
-        on cloud. <a href="/">Chat</a>, <a href="/row-chat">Row Chat</a>
+        on cloud. <a href="/">Chat</a>, <a href="/transactions">Transactions</a>
     </div>
   </div>
-  <%- include("footer",{pageName:'transactions'}) %>
+  <%- include("footer",{pageName:'row-chat'}) %>
