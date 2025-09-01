@@ -24,6 +24,27 @@ This project leverages AI modules to assist with finance-related tracking tasks.
 
 Try the live demo: ✨ [Demo](https://finance-assistance-ai-tool-rohit.netlify.app/)
 
+
+## Chat Flow
+
+```mermaid
+flowchart TD
+    A(["User sends message"]) --> B["Backend Route: /chat"]
+    B --> C{"Validate userId & message?"}
+    C -- Invalid --> E["Return error to user"]
+    C -- Valid --> F["Send message to AI API"]
+    F --> G{"AI requires tools?"}
+    G -- No --> H["AI returns final response"]
+    G -- Yes --> I["Call Tools Service"]
+    I --> J["Get Tool Results"]
+    J --> K["Send Tool Results back to AI API"]
+    K --> L{"More tool calls required?"}
+    L -- Yes --> I
+    L -- No --> H
+    H --> M["Format final AI response"]
+    M --> N["Send response back to user"]
+```
+
 ## Features 🚀
 
 - Track income and expenses
