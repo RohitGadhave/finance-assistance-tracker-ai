@@ -90,6 +90,8 @@ export const deleteUser = async (req: Request, res: Response) => {
 };
 
 export const logout = (req: Request, res: Response) => {
+  res.set('Cache-Control', 'no-store');
+  res.set('ETag', '');
   res.clearCookie(config.cookieUserKey); // name of your cookie
-  res.send("Cookie cleared!");
+  res.status(200).send("Cookie cleared!");
 };

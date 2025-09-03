@@ -436,7 +436,7 @@ export async function getChatTopics() {
 
 export async function logout() {
     if (confirm("Are you sure you want to logout?")) {
-        const res = await getData('/user/logout');
+        const res = await postData('/user/logout');
         console.log(res);
         alert('Logout');
         location.reload();
