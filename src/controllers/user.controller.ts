@@ -32,8 +32,8 @@ export const createUser = async (req: Request, res: Response) => {
       secure: true, // ensures it's sent only over HTTPS
       sameSite: "strict", // or "Lax" depending on your flow
     });
-    const token = generateSignToken(user);
-    res.status(201).json({token,user,data});
+    const token = generateSignToken(data);
+    res.status(201).json({token,user});
   } catch (err) {
     res.status(500).json({ error: "Failed to create user", details: err });
   }

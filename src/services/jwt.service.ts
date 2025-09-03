@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 // import bcrypt from 'bcryptjs';
 import { User } from "../types/user.interface";
 const SECRET_KEY = "xxxx-xxxx";
-export function generateSignToken(user: User) {
+export function generateSignToken(user: any) {
   const token = jwt.sign(user, SECRET_KEY, { expiresIn: "1ms" });
   return token;
 }
