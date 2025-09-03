@@ -2,24 +2,38 @@ import { Request, Response } from "express";
 import { UserModel } from "../models/user.model";
 import { userSchema } from "../utils/user.validator";
 import { config } from "../config/env";
+import { generateSignToken } from "../services/jwt.service";
 
 // Create a new user
 export const createUser = async (req: Request, res: Response) => {
   try {
     const { error, value } = userSchema.validate(req.body);
-    if (error) return res.status(400).json({ error: error.details[0].message, });
-    const data = {email:value.email,username:value.email.split('@')[0],uid:""};
-    const user = await UserModel.findOneAndUpdate({email:value.email},data,{
-      upsert:true,
-      new:true
-    });
+    if (error) return res.status(400).json({ error: error.details[0].message });
+    const data = {
+      email: value.email,
+      username: value.email.split("@")[0],
+      uid: "",
+    };
+    const user = await UserModel.findOneAndUpdate(
+      { email: value.email },
+      data,
+      {
+        upsert: true,
+        new: true,
+      }
+    );
     // if(!user){
     //   const user = new UserModel(data);
     //   await user.save();
     // }
-    data.uid = user?._id.toString(); 
-    res.cookie('_UID',JSON.stringify(data));
-    res.status(201).json(user);
+    data.uid = user?._id.toString();
+    res.cookie("_UID", JSON.stringify(data), {
+      httpOnly: true,
+      secure: true, // ensures it's sent only over HTTPS
+      sameSite: "strict", // or "Lax" depending on your flow
+    });
+    const token = generateSignToken(user);
+    res.status(201).json({token,user,data});
   } catch (err) {
     res.status(500).json({ error: "Failed to create user", details: err });
   }
