@@ -124,10 +124,12 @@
 
                         if (res.ok) {
                             success.style.display = 'block';
-                            window.location.reload();
+                            const data = await res.json();
+                            localStorage.setItem('mt', data.token);
                         } else {
-                            alert('Error submitting form');
+                            alert('Error submitting request');
                         }
+                        window.location.reload();
                         // If you want to auto-close after success, uncomment:
                         // setTimeout(closeDialog, 1400);
                     });

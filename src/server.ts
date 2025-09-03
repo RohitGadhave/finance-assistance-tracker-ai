@@ -5,7 +5,7 @@ import cors from "cors";
 import { errorHandler } from "./middlewares/error.middleware";
 import { notFoundHandler } from "./middlewares/notFound.middleware";
 import { apiRouter } from "./routes/index.route";
-import "./config/init_mogodb";
+import { connectDB } from "./config/init_mogodb";
 
 import path from "path";
 
@@ -37,7 +37,10 @@ const csrfProtection = csrf({ cookie: true });
 
 app.use(express.static(getPath('src/public/www')));
 
-
+app.use(async (req,res,next)=>{
+  await connectDB();
+  next();
+});
 app.get('/1', (req, res) => {
   res.sendFile(path.join(getPath('src/public/vendor'), 'chat.html'));
 });
